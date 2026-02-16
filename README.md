@@ -1,7 +1,10 @@
 CLM26-Regime-Classification-Lab
+
+---
+
 Reproducible pipeline for classifying volatility-trend regimes in crude oil futures (CL2) and evaluating in a simple regime-aware trading overlay.
 
-****THIS PROJECT IS A WORK IN PROGRESS****
+****THIS PROJECT IS A WORK IN PROGRESS****:
 a full report will be written and published shortly after the conclusion of the game. 
 
 OVERVIEW
