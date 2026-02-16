@@ -14,17 +14,27 @@ This script reproduces the REPL model exactly:
 9. Build overlay using predicted regimes
 10. Compute transition matrix & expected durations
 11. Save outputs
-
-This is the highest-accuracy version built in the REPL.
 """
 
 import pandas as pd
+from pathlib import Path
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, TimeSeriesSplit, GridSearchCV
 from sklearn.metrics import confusion_matrix, classification_report
 
 from overlay import build_overlay
 from regime_analysis import compute_transition_matrix, compute_expected_durations
+
+
+# ---------------------------------------------------------
+#  PATHS — FIXED SO DATA ALWAYS SAVES TO PROJECT ROOT
+# ---------------------------------------------------------
+
+# This file lives in <project_root>/src or <project_root> depending on your structure.
+# We anchor everything to the project root.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]   # go up from /src to project root
+DATA_DIR = PROJECT_ROOT / "data"
+DATA_DIR.mkdir(exist_ok=True)
 
 
 # ---------------------------------------------------------
@@ -89,7 +99,6 @@ def train_repl_model_with_grid(df: pd.DataFrame):
         X, y, shuffle=False, test_size=0.2
     )
 
-    # Baseline model (REPL)
     baseline = RandomForestClassifier(
         n_estimators=300,
         max_depth=5,
@@ -97,7 +106,6 @@ def train_repl_model_with_grid(df: pd.DataFrame):
     )
     baseline.fit(X_train, y_train)
 
-    # Full REPL GridSearchCV
     param_grid = {
         "n_estimators": [200, 300, 500],
         "max_depth": [5, 7, 9],
@@ -131,7 +139,7 @@ def train_repl_model_with_grid(df: pd.DataFrame):
 
 def main():
     print("\n=== STEP 1: Load final_dataset.csv ===")
-    df = pd.read_csv("data/final_dataset.csv")
+    df = pd.read_csv(DATA_DIR / "final_dataset.csv")
     print("Dataset loaded:", df.shape)
 
     print("\n=== STEP 2: Build REPL-style features ===")
@@ -167,10 +175,12 @@ def main():
     print("\n=== STEP 7: Build trading overlay ===")
     df = build_overlay(df, preds, X_test.index)
 
-    print("\n=== STEP 8: Save outputs ===")
-    df.to_csv("data/model_output.csv", index=False)
-    transition_matrix.to_csv("data/transition_matrix.csv")
-    expected_durations.to_csv("data/expected_durations.csv")
+    print("\n=== STEP 8: Save all outputs ===")
+
+    df.to_csv(DATA_DIR / "model_output.csv", index=False)
+    df.to_csv(DATA_DIR / "overlay_output.csv", index=False)
+    transition_matrix.to_csv(DATA_DIR / "transition_matrix.csv")
+    expected_durations.to_csv(DATA_DIR / "expected_durations.csv")
 
     print("\nAll outputs saved to /data/")
     print("Pipeline complete.\n")
