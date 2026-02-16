@@ -1,14 +1,26 @@
 import pandas as pd
+from pathlib import Path
 
-def load_cl_data(path: str) -> pd.DataFrame:
-    """
-    Load CLM26 historical data from CSV.
+DATA_DIR = Path("data/yahoo_raw")
 
-    Expected columns:
-    Date, Open, High, Low, Close, Volume, Open Interest
-    """
-    df = pd.read_csv(path)
-    df['Date'] = pd.to_datetime(df['Date'])
-    df = df.sort_values('Date')
-    df['return'] = df['Close'].pct_change()
+def load_series(name):
+    path = DATA_DIR / f"{name}.csv"
+
+    # Skip the first 3 junk rows (Price, Ticker, Date)
+    df = pd.read_csv(path, header=None, skiprows=3)
+
+    # Assign correct column names
+    df.columns = ["date", "close", "high", "low", "open", "volume"]
+
+    # Parse date
+    df["date"] = pd.to_datetime(df["date"])
+
+    # Sort and return
+    df = df.sort_values("date").reset_index(drop=True)
     return df
+
+def load_all():
+    cl2 = load_series("CL2")
+    dxy = load_series("DXY")
+    return cl2, dxy
+

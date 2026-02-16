@@ -2,3 +2,7 @@ pandas
 numpy
 matplotlib
 jupyter
+yfinance
+seaborn
+scipy
+scikit-learn
