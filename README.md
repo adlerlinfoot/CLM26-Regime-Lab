@@ -1,6 +1,9 @@
 CLM26-Regime-Classification-Lab
 Reproducible pipeline for classifying volatility-trend regimes in crude oil futures (CL2) and evaluating in a simple regime-aware trading overlay.
 
+****THIS PROJECT IS A WORK IN PROGRESS****
+a full report will be written and published shortly after the conclusion of the game. 
+
 OVERVIEW
 This project builds a 4-state market regime model using CL2 continuous futures and DXY.  
 Regimes are defined by volatility (high/low) and trend (up/down), producing interpretable states:
@@ -12,13 +15,13 @@ Regimes are defined by volatility (high/low) and trend (up/down), producing inte
 
 The model uses rolling returns, volatility measures, momentum, moving averages, slope features, vol-of-vol, and DXY. All features are shifted by one day to prevent lookahead bias.
 
-A RandomForest classifier is tuned via full GridSearchCV with TimeSeriesSplit, achieving **>80% weighted accuracy** on a strict out-of-sample test set — exceeding typical academic benchmarks for 4-class financial regime models.
+A RandomForest classifier is tuned via full GridSearchCV with TimeSeriesSplit, achieving **>80% weighted accuracy** on a strict out-of-sample test set â€” exceeding typical academic benchmarks for 4-class financial regime models.
 
 ---
 
 METHOD SUMMARY
 - **Feature engineering:** rolling returns, vol windows, momentum, SMA spreads, slopes, vol-of-vol, macro overlay.  
-- **Regime labeling:** volatility state × trend state (binary × binary).  
+- **Regime labeling:** volatility state Ã— trend state (binary Ã— binary).  
 - **Modeling:** RandomForest with full hyperparameter grid search (time-series aware).  
 - **Evaluation:** confusion matrix, classification report, transition matrix, expected durations.  
 - **Overlay:** simple long/short mapping based on predicted regimes, with cumulative equity and days-in-regime tracking.
